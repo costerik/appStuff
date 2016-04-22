@@ -3,4 +3,7 @@
     <string name="sign_up">Sign up</string>
     <string name="log_in">Log in</string>
     <string name="mensaje_inicial">Enjoy the good things of the life!!!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
