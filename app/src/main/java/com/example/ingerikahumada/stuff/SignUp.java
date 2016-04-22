@@ -102,13 +102,14 @@ public class SignUp extends Fragment {
                 m_fb.createUser(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
                     @Override
                     public void onSuccess(Map<String, Object> result) {
+                        //System.out.println("Successfully created user account with uid: " + result.get("uid"));
                         Snackbar.make(getView(),"Successfully created user account", Snackbar.LENGTH_SHORT ).show();
                     }
                     @Override
                     public void onError(FirebaseError firebaseError) {
-                        Log.e("Error","error!!!");
                     }
                 });
+
             }
         });
 

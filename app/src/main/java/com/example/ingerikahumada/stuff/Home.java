@@ -10,6 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 
 /**
@@ -23,6 +28,8 @@ import android.widget.Button;
 public class Home extends Fragment {
 
     private Button signUpButton, logInButton;
+    private EditText emailEdt, passwordEdt;
+    Firebase m_fb;
 
 
 
@@ -74,6 +81,27 @@ public class Home extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_home, container, false);
         signUpButton = (Button)view.findViewById(R.id.bottom_button);
+        logInButton  = (Button)view.findViewById(R.id.top_button);
+        emailEdt     = (EditText)view.findViewById(R.id.input_email_log_in);
+        passwordEdt  = (EditText)view.findViewById(R.id.input_password_log_in);
+        m_fb = new Firebase("https://movil.firebaseio.com/");
+
+        logInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                m_fb.authWithPassword(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.AuthResultHandler() {
+                    @Override
+                    public void onAuthenticated(AuthData authData) {
+                        //System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+                        Snackbar.make(getView(),"User ID: " + authData.getUid() + ", Provider: " + authData.getProvider(), Snackbar.LENGTH_SHORT ).show();
+                    }
+                    @Override
+                    public void onAuthenticationError(FirebaseError firebaseError) {
+                        // there was an error
+                    }
+                });
+            }
+        });
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
