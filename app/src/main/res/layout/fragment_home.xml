@@ -27,7 +27,7 @@
             android:id="@+id/msj"
             android:text="@string/mensaje_inicial"
             android:textColor="@color/colorPrimary"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:fontFamily="sans-serif-condensed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
