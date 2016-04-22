@@ -12,8 +12,8 @@
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_password">Enter the password</string>
     <string name="sign_up_msj">Upload Photo</string>
+    <string name="create_activity">Create activity</string>
+    <string name="see_activities">See activities</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

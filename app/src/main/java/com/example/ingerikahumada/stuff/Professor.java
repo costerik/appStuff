@@ -5,34 +5,25 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Home.OnFragmentInteractionListener} interface
+ * {@link Professor.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
+ * Use the {@link Professor#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Home extends Fragment {
-
-    private Button signUpButton, logInButton;
-    private EditText emailEdt, passwordEdt;
-    Firebase m_fb;
-
-
-
+public class Professor extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,7 +35,7 @@ public class Home extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public Home() {
+    public Professor() {
         // Required empty public constructor
     }
 
@@ -54,11 +45,11 @@ public class Home extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
+     * @return A new instance of fragment Professor.
      */
     // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
+    public static Professor newInstance(String param1, String param2) {
+        Professor fragment = new Professor();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,52 +64,22 @@ public class Home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_home, container, false);
-        signUpButton = (Button)view.findViewById(R.id.bottom_button);
-        logInButton  = (Button)view.findViewById(R.id.top_button);
-        emailEdt     = (EditText)view.findViewById(R.id.input_email_log_in);
-        passwordEdt  = (EditText)view.findViewById(R.id.input_password_log_in);
-        m_fb = new Firebase("https://movil.firebaseio.com/");
+        View view = inflater.inflate(R.layout.fragment_professor, container, false);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        AppCompatActivity appca = ((AppCompatActivity)getActivity());
+        appca.setSupportActionBar(toolbar);
 
-        logInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                m_fb.authWithPassword(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.AuthResultHandler() {
-                    @Override
-                    public void onAuthenticated(AuthData authData) {
-                        //System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
-                        Snackbar.make(getView(),"User ID: " + authData.getUid() + ", Provider: " + authData.getProvider(), Snackbar.LENGTH_SHORT ).show();
-                    }
-                    @Override
-                    public void onAuthenticationError(FirebaseError firebaseError) {
-                        // there was an error
-                    }
-                });
-
-                Professor professor = new Professor();
-                getFragmentManager().beginTransaction().replace(R.id.fragment_container,professor).commit();
-            }
-        });
-
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Snackbar.make(v, "Hola mundo", Snackbar.LENGTH_SHORT).show();
-
-                SignUp su= new SignUp();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_container,su);
-                ft.addToBackStack(null);
-                ft.commit();
-
-            }
-        });
+        android.support.v7.app.ActionBar ab=appca.getSupportActionBar();
+        ab.setDisplayShowHomeEnabled(true);
+        ab.setIcon(R.drawable.pin2);
+        ab.setTitle("");
         return view;
     }
 
@@ -129,8 +90,7 @@ public class Home extends Fragment {
         }
     }
 
-    /*
-    @Override
+    /*@Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -147,12 +107,29 @@ public class Home extends Fragment {
         mListener = null;
     }*/
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.action_bar, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_favorite:
+                Snackbar.make(getView(),"Favorite!!!", Snackbar.LENGTH_SHORT ).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

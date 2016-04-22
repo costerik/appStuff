@@ -104,9 +104,11 @@ public class SignUp extends Fragment {
                     public void onSuccess(Map<String, Object> result) {
                         //System.out.println("Successfully created user account with uid: " + result.get("uid"));
                         Snackbar.make(getView(),"Successfully created user account", Snackbar.LENGTH_SHORT ).show();
+                        getFragmentManager().popBackStack();
                     }
                     @Override
                     public void onError(FirebaseError firebaseError) {
+                        Snackbar.make(getView(),"An error ocurred", Snackbar.LENGTH_SHORT ).show();
                     }
                 });
 
