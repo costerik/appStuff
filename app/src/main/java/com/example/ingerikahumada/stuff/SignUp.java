@@ -3,10 +3,21 @@ package com.example.ingerikahumada.stuff;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -18,6 +29,12 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class SignUp extends Fragment {
+
+    private EditText fullNameEdt, passwordEdt, emailEdt;
+    private Button signUpButton;
+    private ImageView photoView;
+    protected Firebase m_fb;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,7 +81,38 @@ public class SignUp extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        fullNameEdt = (EditText)view.findViewById(R.id.input_name);
+        passwordEdt = (EditText)view.findViewById(R.id.input_password);
+        emailEdt    = (EditText)view.findViewById(R.id.input_email);
+        signUpButton = (Button)view.findViewById(R.id.btn_signup);
+        m_fb = new Firebase("https://movil.firebaseio.com/");
+
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Firebase ref=m_fb.child("users");
+                Firebase pushRef=ref.push();
+
+                Map<String, String> data= new HashMap<String, String>();
+                data.put("name"     ,fullNameEdt.getText().toString());
+                data.put("email"    ,emailEdt.getText().toString());
+                data.put("password" ,passwordEdt.getText().toString());
+                pushRef.setValue(data);*/
+                m_fb.createUser(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
+                    @Override
+                    public void onSuccess(Map<String, Object> result) {
+                        Snackbar.make(getView(),"Successfully created user account", Snackbar.LENGTH_SHORT ).show();
+                    }
+                    @Override
+                    public void onError(FirebaseError firebaseError) {
+                        Log.e("Error","error!!!");
+                    }
+                });
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
