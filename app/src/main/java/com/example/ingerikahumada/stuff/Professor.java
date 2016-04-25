@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Professor extends Fragment {
+
+    private RecyclerView myRecyclerView;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -116,7 +119,7 @@ public class Professor extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle item selection
         switch (item.getItemId()) {
-            case R.id.action_favorite:
+            case R.id.action_create:
                 Snackbar.make(getView(),"Favorite!!!", Snackbar.LENGTH_SHORT ).show();
                 return true;
             default:

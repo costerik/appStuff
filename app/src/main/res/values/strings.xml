@@ -14,6 +14,9 @@
     <string name="sign_up_msj">Upload Photo</string>
     <string name="create_activity">Create activity</string>
     <string name="see_activities">See activities</string>
+    <string name="name">Name</string>
+    <string name="start_date">Start date</string>
+    <string name="finish_date">Finish Date</string>
 
 
 </resources>
