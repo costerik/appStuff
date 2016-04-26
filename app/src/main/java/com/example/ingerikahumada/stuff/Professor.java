@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +25,7 @@ import android.view.ViewGroup;
  * Use the {@link Professor#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Professor extends Fragment {
+public class Professor extends Fragment{
 
     private RecyclerView myRecyclerView;
     // TODO: Rename parameter arguments, choose names that match
@@ -121,6 +122,8 @@ public class Professor extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_create:
                 Snackbar.make(getView(),"Favorite!!!", Snackbar.LENGTH_SHORT ).show();
+                CreateAssigment ca = new CreateAssigment();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,ca).addToBackStack(null).commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
