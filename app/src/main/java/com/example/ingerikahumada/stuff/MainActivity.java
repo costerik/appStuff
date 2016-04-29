@@ -14,8 +14,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Home home= new Home();
-
+        LocationStuff ls = new LocationStuff();
         //getFragmentManager().beginTransaction().add(R.id.fragment_container, home).commit();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, home).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, ls).commit();
     }
 }
