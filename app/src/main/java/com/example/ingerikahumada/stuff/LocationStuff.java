@@ -3,11 +3,14 @@ package com.example.ingerikahumada.stuff;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -28,17 +31,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 public class LocationStuff extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    //private TextView latitud, longitude;
     protected Location mLastLocation;
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     private Boolean mRequestingLocationUpdates = true;
     private GoogleMap mMap;
+    private ArrayList<LatLng> latLonArray;
+    private FloatingActionButton fab, fab2,fab3, fab4;
 
     public LocationStuff() {
         // Required empty public constructor
@@ -55,7 +62,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
                     .build();
         }
         createLocationRequest();
-
+        latLonArray = new ArrayList<LatLng>();
     }
 
     @Override
@@ -63,11 +70,47 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_location_stuff, container, false);
-        //latitud = (TextView) v.findViewById(R.id.latitude_txt);
-        //longitude = (TextView) v.findViewById(R.id.longitude_txt);
+        fab = (FloatingActionButton)v.findViewById(R.id.fab_cam);
+        fab2 = (FloatingActionButton)v.findViewById(R.id.fab_voice);
+        fab3 = (FloatingActionButton)v.findViewById(R.id.fab_text);
+        fab4 = (FloatingActionButton)v.findViewById(R.id.fab_tag);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(getView(),"hello cam",Snackbar.LENGTH_SHORT).show();
+                addLines();
+            }
+        });
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(getView(),"hello voice",Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        fab3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(getView(),"hello note",Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(getView(),"hello tag",Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        /*
+           Obtencion del fragment mediante la actividad asi de esta manera realizar el casting del fragment a mapfragment
+           para su posterior uso
+         */
         MapFragment mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Log.e("a", mapFragment.toString());
+
         return v;
     }
 
@@ -131,27 +174,29 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onLocationChanged(Location location) {
-        //latitud.setText(String.valueOf(location.getLatitude()));
-        //longitude.setText(String.valueOf(location.getLongitude()));
-        mLastLocation=location;
+        latLonArray.add(new LatLng(location.getLatitude(),location.getLongitude()));
+        /*mLastLocation=location;
         Log.e("LocationChanged", location.getLatitude() + " " + location.getLongitude());
         LatLng lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(lastLocation).title("Home?"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(lastLocation));
-
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(lastLocation)      // Sets the center of the map to lastLocation
                 .zoom(17)                   // Sets the zoom
                 .bearing(90)                // Sets the orientation of the camera to east
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if(mMap==null) {
+            mMap = googleMap;
+            Log.e("onMapRea..",mMap.toString());
+            addLines();
+        }
+        /*if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -161,8 +206,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        Location location=LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Location location=LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);*/
 
     }
 
@@ -190,5 +234,17 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
+    }
+
+    private void addLines() {
+        if(latLonArray.size()>0) {
+            mMap.addPolyline((new PolylineOptions())
+                    .addAll(latLonArray).width(5).color(Color.BLUE)
+                    .geodesic(true));
+
+            // move camera to zoom on map
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLonArray.get(0),
+                    18));
+        }
     }
 }
