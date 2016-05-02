@@ -7,14 +7,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -28,6 +34,8 @@ import android.view.ViewGroup;
 public class Professor extends Fragment{
 
     private RecyclerView myRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -69,6 +77,7 @@ public class Professor extends Fragment{
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -76,6 +85,14 @@ public class Professor extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_professor, container, false);
+        myRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycle_view);
+        ArrayList<String> a=new ArrayList<String>(Arrays.asList("Plaza de la paz","Via 40", "Buenavista"));
+        mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        myRecyclerView.setLayoutManager(mLayoutManager);
+        myRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new AssignmentAdapter(a);
+        myRecyclerView.setAdapter(mAdapter);
+
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         AppCompatActivity appca = ((AppCompatActivity)getActivity());
         appca.setSupportActionBar(toolbar);
@@ -84,6 +101,9 @@ public class Professor extends Fragment{
         ab.setDisplayShowHomeEnabled(true);
         ab.setIcon(R.drawable.pin2);
         ab.setTitle("");
+
+        Log.e("Size",a.size()+" "+mAdapter.getItemCount());
+
         return view;
     }
 

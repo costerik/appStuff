@@ -97,6 +97,14 @@ public class CreateAssigment extends Fragment {
             }
         });
 
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LocationStuff ls = new LocationStuff();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container,ls).addToBackStack(null).commit();
+            }
+        });
+
         return v;
     }
 

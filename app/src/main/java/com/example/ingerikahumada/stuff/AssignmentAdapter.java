@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,8 +15,8 @@ import java.util.List;
  */
 public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.MyViewHolder> {
 
-    private List mData;
-    public AssignmentAdapter(List data){
+    private ArrayList<String> mData;
+    public AssignmentAdapter(ArrayList data){
         this.mData = data;
     }
 
@@ -29,9 +30,9 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.textViewName.setText("Nombre del grupo");
-        holder.textViewStartDate.setText("Fecha Inicial");
-        holder.textViewFinishDate.setText("Fecha ");
+        holder.textViewName.setText(mData.get(position));
+        holder.textViewStartDate.setText(mData.get(position)+"2");
+        holder.textViewFinishDate.setText(mData.get(position)+"3");
     }
 
     @Override

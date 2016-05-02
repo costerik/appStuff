@@ -15,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
         Home home= new Home();
         LocationStuff ls = new LocationStuff();
+        Professor p= new Professor();
         //getFragmentManager().beginTransaction().add(R.id.fragment_container, home).commit();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, ls).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, home).commit();
     }
 }
