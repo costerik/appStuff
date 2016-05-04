@@ -99,18 +99,22 @@ public class CreateAssigment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    Firebase ref = m_fb.child("assigments");
-                    Firebase pushRef = ref.push();
+                    if(name.getText().toString().isEmpty() || startDate.getText().toString().isEmpty() || finishDate.getText().toString().isEmpty()) {
+                        Snackbar.make(getView(),"Some field are empty",Snackbar.LENGTH_SHORT).show();
+                    }else {
+                        Firebase ref = m_fb.child("assigments");
+                        Firebase pushRef = ref.push();
 
-                    Map<String, String> data = new HashMap<String, String>();
-                    data.put("createdBy", keyProfessor );
-                    data.put("name", name.getText().toString());
-                    data.put("startDate", startDate.getText().toString());
-                    data.put("finishDate", finishDate.getText().toString());
-                    pushRef.setValue(data);
+                        Map<String, String> data = new HashMap<String, String>();
+                        data.put("createdBy", keyProfessor);
+                        data.put("name", name.getText().toString());
+                        data.put("startDate", startDate.getText().toString());
+                        data.put("finishDate", finishDate.getText().toString());
+                        pushRef.setValue(data);
 
-                    Snackbar.make(getView(),"Successfully created assigment",Snackbar.LENGTH_SHORT).show();
-                    getFragmentManager().popBackStack();
+                        Snackbar.make(getView(), "Successfully created assigment", Snackbar.LENGTH_SHORT).show();
+                        getFragmentManager().popBackStack();
+                    }
                 }catch (Exception e){
                     Log.e("Error","Creating Assigment");
                 }

@@ -1,6 +1,7 @@
 package com.example.haynervasquez.stuff;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,21 @@ import java.util.ArrayList;
 public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.MyViewHolder> {
 
     private ArrayList<Professor.Assigment> mData;
+    private RecyclerClickListener mRecyclerClickListener;
+
+    public interface RecyclerClickListener{
+        void itemClick(Professor.Assigment assigment);
+    }
+
+    public void setRecyclerClickListener(RecyclerClickListener recyclerClickListener){
+        mRecyclerClickListener=recyclerClickListener;
+        Log.i("SetREcycler...","Set...");
+        if(mRecyclerClickListener==null){
+            Log.i("SetREcycler...","null");
+        }else{
+            Log.i("SetREcycler...",mRecyclerClickListener.toString());
+        }
+    }
 
     public AssignmentAdapter(ArrayList<Professor.Assigment> data){
         this.mData = data;
@@ -39,14 +55,24 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.My
         return mData.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView textViewName, textViewStartDate, textViewFinishDate;
 
         public MyViewHolder(View itemView){
             super(itemView);
+            itemView.setOnClickListener(this);
             this.textViewName       = (TextView)itemView.findViewById(R.id.assigment_name);
             this.textViewStartDate  = (TextView)itemView.findViewById(R.id.start_date);
             this.textViewFinishDate = (TextView)itemView.findViewById(R.id.finish_date);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.i("onClickMyViewHolder","onClick");
+            if (mRecyclerClickListener != null) {
+                Log.i("onClickMyViewHolder",""+getPosition());
+                mRecyclerClickListener.itemClick(mData.get(getPosition()));
+            }
         }
     }
 }

@@ -139,7 +139,15 @@ public class Home extends Fragment {
     }
 
     public static class User{
-        private String name, email, password;
+        private String keyFireBase, name, email, password;
+
+        public String getKeyFireBase(){
+            return this.keyFireBase;
+        }
+
+        public void setKeyFireBase(String keyFireBase){
+            this.keyFireBase=keyFireBase;
+        }
 
         public String getName(){
             return this.name;

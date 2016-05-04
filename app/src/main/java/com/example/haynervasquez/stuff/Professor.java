@@ -24,10 +24,10 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class Professor extends Fragment{
+public class Professor extends Fragment implements AssignmentAdapter.RecyclerClickListener{
 
     private RecyclerView myRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private AssignmentAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Firebase m_fb;
     private ArrayList<Assigment> assigments;
@@ -40,6 +40,7 @@ public class Professor extends Fragment{
     static final String ID_EMAIL = "idEmail";
 
     private String keyProfessor;
+    private String nameProfessor;
 
 
     public Professor() {
@@ -70,6 +71,7 @@ public class Professor extends Fragment{
         Bundle extras= getArguments();
         if(extras!=null) {
             keyProfessor = extras.getString(ID_KEY);
+            nameProfessor = extras.getString(ID_NAME);
             System.out.println(extras.getString(ID_KEY)+" "+extras.getString(ID_NAME)+" "+extras.getString(ID_EMAIL));
         }
         setHasOptionsMenu(true);
@@ -83,7 +85,6 @@ public class Professor extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_professor, container, false);
         myRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycle_view);
-        //ArrayList<String> a=new ArrayList<String>(Arrays.asList("Plaza de la paz","Via 40", "Buenavista"));
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         myRecyclerView.setLayoutManager(mLayoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -96,7 +97,7 @@ public class Professor extends Fragment{
         android.support.v7.app.ActionBar ab=appca.getSupportActionBar();
         ab.setDisplayShowHomeEnabled(true);
         ab.setIcon(R.drawable.pin2);
-        ab.setTitle("");
+        ab.setTitle(nameProfessor);
 
         Log.i("onCreateView","");
         return view;
@@ -128,13 +129,23 @@ public class Professor extends Fragment{
         }
     }
 
+    /*Metodo de la interface de MyGroupAdapter
+    *
+    * */
+    @Override
+    public void itemClick(Assigment assigment) {
+        ListStudentAssigment lsa= ListStudentAssigment.newInstance(assigment.getKeyFireBase(), assigment.name);
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, lsa).addToBackStack(null).commit();
+        Log.i("itemClick", assigment.getName());
+    }
+
     private class GetData extends AsyncTask<Void,Void,Void> {
 
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
             pDialog=new ProgressDialog(getContext());
-            pDialog.setTitle("Learn English");
+            pDialog.setTitle("App Stuff");
             pDialog.setMessage("Checking...");
             pDialog.setIndeterminate(false);
             pDialog.show();
@@ -148,13 +159,15 @@ public class Professor extends Fragment{
                     System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
                     for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                         Assigment a = postSnapshot.getValue(Assigment.class);
-                        System.out.println(a.getCreatedBy()+" "+ a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
+                        a.setKeyFireBase(postSnapshot.getKey());
+                        System.out.println(a.getKeyFireBase()+" "+a.getCreatedBy()+" "+ a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
                         if(a.getCreatedBy().compareTo(keyProfessor)==0) {
                             assigments.add(a);
                         }
                         System.out.println(assigments.size());
                     }
                     mAdapter = new AssignmentAdapter(assigments);
+                    mAdapter.setRecyclerClickListener(Professor.this);
                     myRecyclerView.setAdapter(mAdapter);
                 }
                 @Override
@@ -168,12 +181,13 @@ public class Professor extends Fragment{
 
         @Override
         protected void onPostExecute(Void result){
+
             pDialog.dismiss();
         }
     }
 
     public static class Assigment{
-        private String createdBy, finishDate, name ,startDate;
+        private String keyFireBase, createdBy, finishDate, name ,startDate;
 
         /*public Assigment(String name, String startDate, String finishDate){
             this.name= name;
@@ -182,6 +196,14 @@ public class Professor extends Fragment{
         }*/
         public String getCreatedBy(){
             return this.createdBy;
+        }
+
+        public String getKeyFireBase(){
+            return this.keyFireBase;
+        }
+
+        public void setKeyFireBase(String keyFireBase){
+            this.keyFireBase=keyFireBase;
         }
 
         public String getName(){

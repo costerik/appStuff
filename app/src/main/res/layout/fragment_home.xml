@@ -14,7 +14,7 @@
         android:id="@+id/top_linear"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_weight="1"
+        android:layout_weight="0.5"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
@@ -37,6 +37,7 @@
         android:id="@+id/bottom_linear"
         android:orientation="vertical"
         android:layout_weight="1"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
@@ -47,6 +48,7 @@
 
             <EditText
                 android:id="@+id/input_email_log_in"
+                android:text="alfonso@uninorte.edu.co"
                 android:theme="@style/MyEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,6 +63,7 @@
 
             <EditText
                 android:id="@+id/input_password_log_in"
+                android:text="12345"
                 android:theme="@style/MyEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,8 +84,7 @@
             android:id="@+id/or"
             android:text="or"
             android:textSize="20dp"
-            android:textAlignment="center"
-
+            android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
