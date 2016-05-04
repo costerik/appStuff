@@ -38,17 +38,48 @@ public class Professor extends Fragment{
     private ArrayList<Assigment> assigments;
     private ProgressDialog pDialog;
 
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    static final String ID_KEY = "idKey";
+    static final String ID_NAME = "idName";
+    static final String ID_EMAIL = "idEmail";
+
+    private String keyProfessor;
+
 
     public Professor() {
         // Required empty public constructor
     }
 
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param key Parameter 1.
+     * @return A new instance of fragment CreateProfessor.
+     */
+
+    public static Professor newInstance(String key, String name, String email) {
+        Professor fragment = new Professor();
+        Bundle args = new Bundle();
+        args.putString(ID_KEY, key);
+        args.putString(ID_NAME,name);
+        args.putString(ID_EMAIL,email);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras= getArguments();
+        if(extras!=null) {
+            keyProfessor = extras.getString(ID_KEY);
+            System.out.println(extras.getString(ID_KEY)+" "+extras.getString(ID_NAME)+" "+extras.getString(ID_EMAIL));
+        }
         setHasOptionsMenu(true);
         m_fb = new Firebase("https://movil.firebaseio.com/assigments");
-        Log.e("onCreate","OnCreate");
+        Log.i("onCreate","OnCreate");
     }
 
     @Override
@@ -72,7 +103,7 @@ public class Professor extends Fragment{
         ab.setIcon(R.drawable.pin2);
         ab.setTitle("");
 
-        Log.e("onCreateView",""+assigments.size());
+        Log.i("onCreateView","");
         return view;
     }
 
@@ -81,7 +112,7 @@ public class Professor extends Fragment{
         super.onResume();
         setHasOptionsMenu(true);
         new GetData().execute();
-        Log.e("onResume", ""+assigments.size());
+        Log.i("onResume", ""+assigments.size());
     }
 
     @Override
@@ -94,9 +125,8 @@ public class Professor extends Fragment{
         // handle item selection
         switch (item.getItemId()) {
             case R.id.action_create:
-                Snackbar.make(getView(),"Favorite!!!", Snackbar.LENGTH_SHORT ).show();
-                CreateAssigment ca = new CreateAssigment();
-                getFragmentManager().beginTransaction().replace(R.id.fragment_container,ca).addToBackStack(null).commit();
+                CreateAssigment ca = CreateAssigment.newInstance(keyProfessor);
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, ca).addToBackStack(null).commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -123,8 +153,10 @@ public class Professor extends Fragment{
                     System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
                     for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                         Assigment a = postSnapshot.getValue(Assigment.class);
-                        System.out.println(a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
-                        assigments.add(a);
+                        System.out.println(a.getCreatedBy()+" "+ a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
+                        if(a.getCreatedBy().compareTo(keyProfessor)==0) {
+                            assigments.add(a);
+                        }
                         System.out.println(assigments.size());
                     }
                     mAdapter = new AssignmentAdapter(assigments);
@@ -146,13 +178,16 @@ public class Professor extends Fragment{
     }
 
     public static class Assigment{
-        private String finishDate, name ,startDate;
+        private String createdBy, finishDate, name ,startDate;
 
         /*public Assigment(String name, String startDate, String finishDate){
             this.name= name;
             this.startDate = startDate;
             this.finishDate = finishDate;
         }*/
+        public String getCreatedBy(){
+            return this.createdBy;
+        }
 
         public String getName(){
             return this.name;
