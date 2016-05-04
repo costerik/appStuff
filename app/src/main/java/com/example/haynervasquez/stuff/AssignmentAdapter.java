@@ -1,14 +1,12 @@
-package com.example.ingerikahumada.stuff;
+package com.example.haynervasquez.stuff;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Ing. Erik Ahumada on 22/04/2016.

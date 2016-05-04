@@ -1,4 +1,4 @@
-package com.example.ingerikahumada.stuff;
+package com.example.haynervasquez.stuff;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

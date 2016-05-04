@@ -1,7 +1,5 @@
-package com.example.ingerikahumada.stuff;
+package com.example.haynervasquez.stuff;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -13,12 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 
@@ -132,6 +127,7 @@ public class Home extends Fragment {
                 //Snackbar.make(v, "Hola mundo", Snackbar.LENGTH_SHORT).show();
 
                 SignUp su= new SignUp();
+                //LocationStuff ls =new LocationStuff();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container,su);
                 ft.addToBackStack(null);

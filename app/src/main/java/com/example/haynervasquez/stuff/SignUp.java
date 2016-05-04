@@ -1,11 +1,9 @@
-package com.example.ingerikahumada.stuff;
+package com.example.haynervasquez.stuff;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -84,13 +81,17 @@ public class SignUp extends Fragment {
             public void onClick(View v) {
                 Firebase ref=m_fb.child("users");
                 Firebase pushRef=ref.push();
+                if(fullNameEdt.getText().toString().isEmpty() || emailEdt.getText().toString().isEmpty() || passwordEdt.getText().toString().isEmpty()) {
+                    Snackbar.make(getView(),"Some text in blank",Snackbar.LENGTH_SHORT).show();
 
-                Map<String, String> data= new HashMap<String, String>();
-                data.put("name"     ,fullNameEdt.getText().toString());
-                data.put("email"    ,emailEdt.getText().toString());
-                data.put("password" ,passwordEdt.getText().toString());
-                pushRef.setValue(data);
-                getFragmentManager().popBackStack();
+                }else{
+                    Map<String, String> data = new HashMap<String, String>();
+                    data.put("name", fullNameEdt.getText().toString());
+                    data.put("email", emailEdt.getText().toString());
+                    data.put("password", passwordEdt.getText().toString());
+                    pushRef.setValue(data);
+                    getFragmentManager().popBackStack();
+                }
                 /*m_fb.createUser(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
                     @Override
                     public void onSuccess(Map<String, Object> result) {

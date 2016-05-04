@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ingerikahumada.stuff">
+    package="com.example.haynervasquez.stuff">
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -25,7 +25,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.haynervasquez.stuff.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
