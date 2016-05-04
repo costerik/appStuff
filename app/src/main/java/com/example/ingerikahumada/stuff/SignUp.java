@@ -69,15 +69,6 @@ public class SignUp extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -91,15 +82,16 @@ public class SignUp extends Fragment {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Firebase ref=m_fb.child("users");
+                Firebase ref=m_fb.child("users");
                 Firebase pushRef=ref.push();
 
                 Map<String, String> data= new HashMap<String, String>();
                 data.put("name"     ,fullNameEdt.getText().toString());
                 data.put("email"    ,emailEdt.getText().toString());
                 data.put("password" ,passwordEdt.getText().toString());
-                pushRef.setValue(data);*/
-                m_fb.createUser(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
+                pushRef.setValue(data);
+                getFragmentManager().popBackStack();
+                /*m_fb.createUser(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.ValueResultHandler<Map<String, Object>>() {
                     @Override
                     public void onSuccess(Map<String, Object> result) {
                         //System.out.println("Successfully created user account with uid: " + result.get("uid"));
@@ -110,7 +102,7 @@ public class SignUp extends Fragment {
                     public void onError(FirebaseError firebaseError) {
                         Snackbar.make(getView(),"An error ocurred", Snackbar.LENGTH_SHORT ).show();
                     }
-                });
+                });*/
 
             }
         });

@@ -4,7 +4,9 @@ package com.example.ingerikahumada.stuff;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class CreateAssigment extends Fragment {
@@ -24,6 +30,7 @@ public class CreateAssigment extends Fragment {
     private ImageButton picker, picker2;
     private TextView startDate, finishDate;
     private Button btnCreate;
+    private Firebase m_fb;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,6 +83,7 @@ public class CreateAssigment extends Fragment {
         picker = (ImageButton)v.findViewById(R.id.picker);
         picker2 = (ImageButton)v.findViewById(R.id.picker2);
         btnCreate = (Button) v.findViewById(R.id.create_assign);
+        m_fb = new Firebase("https://movil.firebaseio.com/");
 
         picker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,8 +108,24 @@ public class CreateAssigment extends Fragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationStuff ls = new LocationStuff();
-                getFragmentManager().beginTransaction().replace(R.id.fragment_container,ls).addToBackStack(null).commit();
+                try {
+                    Firebase ref = m_fb.child("assigments");
+                    Firebase pushRef = ref.push();
+
+                    Map<String, String> data = new HashMap<String, String>();
+                    data.put("name", name.getText().toString());
+                    data.put("startDate", startDate.getText().toString());
+                    data.put("finishDate", finishDate.getText().toString());
+                    pushRef.setValue(data);
+
+                    Snackbar.make(getView(),"Successfully created assigment",Snackbar.LENGTH_SHORT).show();
+                    getFragmentManager().popBackStack();
+                }catch (Exception e){
+                    Log.e("Error","Creating Assigment");
+                }
+                //LocationStuff ls = new LocationStuff();
+                //getFragmentManager().beginTransaction().replace(R.id.fragment_container,ls).addToBackStack(null).commit();
+
             }
         });
 

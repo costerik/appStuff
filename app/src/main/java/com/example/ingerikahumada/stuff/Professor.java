@@ -1,7 +1,9 @@
 package com.example.ingerikahumada.stuff;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -19,65 +21,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Professor.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Professor#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Professor extends Fragment{
 
     private RecyclerView myRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private Firebase m_fb;
+    private ArrayList<Assigment> assigments;
+    private ProgressDialog pDialog;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
 
     public Professor() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Professor.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Professor newInstance(String param1, String param2) {
-        Professor fragment = new Professor();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         setHasOptionsMenu(true);
-
+        m_fb = new Firebase("https://movil.firebaseio.com/assigments");
+        Log.e("onCreate","OnCreate");
     }
 
     @Override
@@ -86,12 +57,11 @@ public class Professor extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_professor, container, false);
         myRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycle_view);
-        ArrayList<String> a=new ArrayList<String>(Arrays.asList("Plaza de la paz","Via 40", "Buenavista"));
+        //ArrayList<String> a=new ArrayList<String>(Arrays.asList("Plaza de la paz","Via 40", "Buenavista"));
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         myRecyclerView.setLayoutManager(mLayoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new AssignmentAdapter(a);
-        myRecyclerView.setAdapter(mAdapter);
+        assigments = new ArrayList<Assigment>();
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         AppCompatActivity appca = ((AppCompatActivity)getActivity());
@@ -102,34 +72,17 @@ public class Professor extends Fragment{
         ab.setIcon(R.drawable.pin2);
         ab.setTitle("");
 
-        Log.e("Size",a.size()+" "+mAdapter.getItemCount());
-
+        Log.e("onCreateView",""+assigments.size());
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }*/
+    public void onResume() {
+        super.onResume();
+        setHasOptionsMenu(true);
+        new GetData().execute();
+        Log.e("onResume", ""+assigments.size());
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -150,18 +103,67 @@ public class Professor extends Fragment{
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private class GetData extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog=new ProgressDialog(getContext());
+            pDialog.setTitle("Learn English");
+            pDialog.setMessage("Checking...");
+            pDialog.setIndeterminate(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            m_fb.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
+                    for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                        Assigment a = postSnapshot.getValue(Assigment.class);
+                        System.out.println(a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
+                        assigments.add(a);
+                        System.out.println(assigments.size());
+                    }
+                    mAdapter = new AssignmentAdapter(assigments);
+                    myRecyclerView.setAdapter(mAdapter);
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    System.out.println("The read failed: " + firebaseError.getMessage());
+                }
+            });
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+            pDialog.dismiss();
+        }
+    }
+
+    public static class Assigment{
+        private String finishDate, name ,startDate;
+
+        /*public Assigment(String name, String startDate, String finishDate){
+            this.name= name;
+            this.startDate = startDate;
+            this.finishDate = finishDate;
+        }*/
+
+        public String getName(){
+            return this.name;
+        }
+
+        public String getStartDate(){
+            return this.startDate;
+        }
+
+        public String getFinishDate(){
+            return this.finishDate;
+        }
     }
 }

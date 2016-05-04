@@ -15,8 +15,9 @@ import java.util.List;
  */
 public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.MyViewHolder> {
 
-    private ArrayList<String> mData;
-    public AssignmentAdapter(ArrayList data){
+    private ArrayList<Professor.Assigment> mData;
+
+    public AssignmentAdapter(ArrayList<Professor.Assigment> data){
         this.mData = data;
     }
 
@@ -30,9 +31,9 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.textViewName.setText(mData.get(position));
-        holder.textViewStartDate.setText(mData.get(position)+"2");
-        holder.textViewFinishDate.setText(mData.get(position)+"3");
+        holder.textViewName.setText(holder.textViewName.getText()+" : "+mData.get(position).getName());
+        holder.textViewStartDate.setText(holder.textViewStartDate.getText()+" : "+mData.get(position).getStartDate());
+        holder.textViewFinishDate.setText(holder.textViewFinishDate.getText()+" : "+mData.get(position).getFinishDate());
     }
 
     @Override
