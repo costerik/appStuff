@@ -28,10 +28,10 @@ import java.util.HashMap;
  * Use the {@link ListStudentAssigment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListStudentAssigment extends Fragment {
+public class ListStudentAssigment extends Fragment implements StudentAdapter.RecyclerClickListener{
 
     private RecyclerView myRecyclerView;
-    private AssignmentAdapter mAdapter;
+    private StudentAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private Firebase m_fb,mFbStudent;
     private ArrayList<Home.User> members;
@@ -57,6 +57,7 @@ public class ListStudentAssigment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param keyAssigment Parameter 1.
+     * @param nameAssigment parameter 2.
      * @return A new instance of fragment ListStudentAssigment.
      */
     // TODO: Rename and change types and number of parameters
@@ -111,6 +112,18 @@ public class ListStudentAssigment extends Fragment {
         setHasOptionsMenu(true);
         new GetData().execute();
         Log.i("onResume", "ListStudentAssigment");
+        members.clear();
+    }
+
+    /*
+    *
+    * Metodo para comunicarse con la interface StudentAdapter.MyViewHolder
+    * al momento de tocar un item del recyclerview, hace algun evento.
+    * */
+
+    @Override
+    public void itemClick(Home.User user) {
+
     }
 
     private class GetData extends AsyncTask<Void,Void,Void> {
@@ -143,10 +156,6 @@ public class ListStudentAssigment extends Fragment {
                     }
 
                     searchStudent();
-
-                    //mAdapter = new AssignmentAdapter(assigments);
-                    //mAdapter.setRecyclerClickListener(Professor.this);
-                    //myRecyclerView.setAdapter(mAdapter);
                 }
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
@@ -167,17 +176,6 @@ public class ListStudentAssigment extends Fragment {
             mFbStudent.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    /*int i=0;
-                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                        System.out.println(keys.size()+" - "+postSnapshot.getKey()+" - "+postSnapshot.getValue());
-                        if(postSnapshot.getKey().compareTo(keys.get(i))==0){
-                            Home.User a = postSnapshot.getValue(Home.User.class);
-                            a.setKey(postSnapshot.getKey());
-                            members.add(a);
-                            i++;
-                        }
-                    }
-                    System.out.println(members.size());*/
                     HashMap<String, String> student= (HashMap<String, String>)dataSnapshot.getValue();
                     for (String key: keys){
                         for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
@@ -195,6 +193,9 @@ public class ListStudentAssigment extends Fragment {
                             System.out.println("Member: " + a.getKeyFireBase() + " " + a.getName() + " " + a.getEmail() + " " + a.getPassword());
                         }
                     }
+                    mAdapter = new StudentAdapter(members);
+                    mAdapter.setRecyclerClickListener(ListStudentAssigment.this);
+                    myRecyclerView.setAdapter(mAdapter);
                 }
 
 

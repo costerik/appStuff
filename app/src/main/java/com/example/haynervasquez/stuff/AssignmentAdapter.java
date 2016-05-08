@@ -23,12 +23,6 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.My
 
     public void setRecyclerClickListener(RecyclerClickListener recyclerClickListener){
         mRecyclerClickListener=recyclerClickListener;
-        Log.i("SetREcycler...","Set...");
-        if(mRecyclerClickListener==null){
-            Log.i("SetREcycler...","null");
-        }else{
-            Log.i("SetREcycler...",mRecyclerClickListener.toString());
-        }
     }
 
     public AssignmentAdapter(ArrayList<Professor.Assigment> data){
@@ -39,8 +33,6 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.My
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.assigment_list_row, parent, false);
         return new MyViewHolder(v);
-        //return null;
-
     }
 
     @Override

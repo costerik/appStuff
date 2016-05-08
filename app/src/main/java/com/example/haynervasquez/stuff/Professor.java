@@ -76,7 +76,7 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
         }
         setHasOptionsMenu(true);
         m_fb = new Firebase("https://movil.firebaseio.com/assigments");
-        Log.i("onCreate","OnCreate");
+        Log.i("onCreate","Professor");
     }
 
     @Override
@@ -99,7 +99,7 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
         ab.setIcon(R.drawable.pin2);
         ab.setTitle(nameProfessor);
 
-        Log.i("onCreateView","");
+        Log.i("onCreateView","Professor");
         return view;
     }
 
@@ -109,6 +109,7 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
         setHasOptionsMenu(true);
         new GetData().execute();
         Log.i("onResume", ""+assigments.size());
+        assigments.clear();
     }
 
     @Override
@@ -130,6 +131,7 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
     }
 
     /*Metodo de la interface de MyGroupAdapter
+    *
     *
     * */
     @Override
@@ -156,7 +158,6 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
             m_fb.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
                     for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                         Assigment a = postSnapshot.getValue(Assigment.class);
                         a.setKeyFireBase(postSnapshot.getKey());
@@ -181,7 +182,6 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
 
         @Override
         protected void onPostExecute(Void result){
-
             pDialog.dismiss();
         }
     }

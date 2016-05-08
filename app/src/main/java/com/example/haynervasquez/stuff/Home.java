@@ -81,7 +81,8 @@ public class Home extends Fragment {
                                             Log.e("OnClickLogIn", "OkProfessor");
                                             log=true;
                                             Professor p = Professor.newInstance(postSnapshot.getKey(),user.getName(),user.getEmail());
-                                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,p).commit();
+                                            getFragmentManager().beginTransaction().replace(R.id.fragment_container,p).addToBackStack(null).commit();
+                                            //getFragmentManager().beginTransaction().replace(R.id.fragment_container,p).commit();
                                             break;
                                         } else {
                                             Log.e("OnClickLogIn", "falseProfessor");
