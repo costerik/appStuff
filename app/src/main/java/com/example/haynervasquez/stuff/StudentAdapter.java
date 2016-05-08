@@ -41,7 +41,7 @@ public class StudentAdapter  extends RecyclerView.Adapter<StudentAdapter.MyViewH
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.textViewName.setText(holder.textViewName.getText()+" : "+mData.get(position).getName());
         holder.textViewStartDate.setText(holder.textViewStartDate.getText()+" : ");
-        holder.textViewFinishDate.setText(holder.textViewFinishDate.getText()+" : ");8u
+        holder.textViewFinishDate.setText(holder.textViewFinishDate.getText()+" : ");
     }
 
     @Override
