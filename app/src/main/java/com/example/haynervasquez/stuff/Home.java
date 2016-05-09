@@ -60,6 +60,8 @@ public class Home extends Fragment {
                             System.out.println(user.getEmail() + " " + emailEdt.getText().toString());
                             System.out.println(user.getPassword() + " " + passwordEdt.getText().toString());
                             if ((user.getEmail().compareTo(emailEdt.getText().toString()) == 0) && (user.getPassword().compareTo(passwordEdt.getText().toString()) == 0)) {
+                                Student s= Student.newInstance(postSnapshot.getKey(), user.getName());
+                                getFragmentManager().beginTransaction().replace(R.id.fragment_container, s).addToBackStack(null).commit();
                                 Log.e("OnClickLogIn", "Ok");
                                 userType=true;
                                 log=true;
@@ -108,32 +110,17 @@ public class Home extends Fragment {
 
                     }
                 });
-                /*m_fb.authWithPassword(emailEdt.getText().toString(), passwordEdt.getText().toString(), new Firebase.AuthResultHandler() {
-                    @Override
-                    public void onAuthenticated(AuthData authData) {
-                        //System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
-                        Snackbar.make(getView(),"User ID: " + authData.getUid() + ", Provider: " + authData.getProvider(), Snackbar.LENGTH_SHORT ).show();
-                    }
-                    @Override
-                    public void onAuthenticationError(FirebaseError firebaseError) {
-                        // there was an error
-                    }
-                });*/
             }
         });
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Snackbar.make(v, "Hola mundo", Snackbar.LENGTH_SHORT).show();
-
                 SignUp su= new SignUp();
-                //LocationStuff ls =new LocationStuff();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container,su);
                 ft.addToBackStack(null);
                 ft.commit();
-
             }
         });
         return view;

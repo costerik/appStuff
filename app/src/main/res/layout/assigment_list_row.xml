@@ -66,13 +66,3 @@
     </android.support.v7.widget.CardView>
 
 </LinearLayout>
-
-
-
-    <!--<ImageView
-        android:background="@color/colorPrimary"
-        android:src="@android:drawable/ic_dialog_map"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />-->
-

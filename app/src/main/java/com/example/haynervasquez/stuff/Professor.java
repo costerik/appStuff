@@ -52,6 +52,8 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
      * this fragment using the provided parameters.
      *
      * @param key Parameter 1.
+     * @param name Parameter 2.
+     * @param email Parameter 3.
      * @return A new instance of fragment CreateProfessor.
      */
 
