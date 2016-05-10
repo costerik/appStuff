@@ -2,6 +2,7 @@ package com.example.haynervasquez.stuff;
 
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -14,12 +15,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +35,7 @@ public class Student extends Fragment implements StudentViewAdapter.RecyclerClic
     private RecyclerView myRecyclerView;
     private StudentViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Firebase m_fb;
+    private Firebase m_fb, m_fbp;
     private ArrayList<Professor.Assigment> assigments;
     private ProgressDialog pDialog;
 
@@ -75,7 +79,8 @@ public class Student extends Fragment implements StudentViewAdapter.RecyclerClic
             nameStudent = getArguments().getString(ID_NAME);
         }
         setHasOptionsMenu(true);
-        m_fb = new Firebase("https://movil.firebaseio.com/assigments");
+        m_fb  = new Firebase("https://movil.firebaseio.com/assigments");
+        m_fbp = new Firebase("https://movil.firebaseio.com/professors");
         Log.i("onCreate","Student");
     }
 
@@ -86,7 +91,6 @@ public class Student extends Fragment implements StudentViewAdapter.RecyclerClic
         View v=inflater.inflate(R.layout.fragment_student, container, false);
         myRecyclerView = (RecyclerView) v.findViewById(R.id.my_recycler_student_view);
         mLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        Log.i("onCreateView",mLayoutManager.toString());
         myRecyclerView.setLayoutManager(mLayoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         assigments = new ArrayList<Professor.Assigment>();
@@ -105,40 +109,101 @@ public class Student extends Fragment implements StudentViewAdapter.RecyclerClic
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-        Log.i("onStart","Student");
+    public void onResume(){
+        super.onResume();
+        new GetData().execute();
+        Log.i("onResume","Student");
         assigments.clear();
-        m_fb.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Professor.Assigment a = postSnapshot.getValue(Professor.Assigment.class);
-                    a.setKeyFireBase(postSnapshot.getKey());
-                    System.out.println(a.getKeyFireBase()+" "+a.getCreatedBy()+" "+ a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
-                    assigments.add(a);
-                    System.out.println(assigments.size());
-                }
-                mAdapter = new StudentViewAdapter(assigments);
-                mAdapter.setRecyclerClickListener(Student.this);
-                myRecyclerView.setAdapter(mAdapter);
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
     }
 
     /*
     * Metodo para saber cual item del recyclerview ha sido presionado con
-    * la información pertinent sobre ese item
+    * la información pertinente sobre ese item
     *
     * */
 
     @Override
     public void itemClick(Professor.Assigment assigment) {
         Log.i("itemClick",assigment.getName());
+        LocationStuff ls = LocationStuff.newInstance(keyStudent,nameStudent,assigment.getKeyFireBase());
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container,ls).addToBackStack(null).commit();
+    }
+
+    private class GetData extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            pDialog=new ProgressDialog(getContext());
+            pDialog.setTitle("App Stuff");
+            pDialog.setMessage("Checking...");
+            pDialog.setIndeterminate(false);
+            pDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            m_fb.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                        Professor.Assigment a = postSnapshot.getValue(Professor.Assigment.class);
+                        a.setKeyFireBase(postSnapshot.getKey());
+                        //System.out.println(a.getKeyFireBase()+" "+a.getCreatedBy()+" "+ a.getName() + " - " + a.getStartDate()+" - "+a.getFinishDate());
+                        assigments.add(a);
+                        System.out.println(assigments.size());
+                    }
+                    findProfessorsName();
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result){
+            pDialog.dismiss();
+        }
+
+        public void findProfessorsName(){
+            for (int i=0;i<assigments.size();i++) {
+                Query queryRef = m_fbp.orderByKey().equalTo(assigments.get(i).getCreatedBy());
+                final int finalI = i;
+                queryRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        assigments.get(finalI).setCreatedByName(dataSnapshot.child("name").getValue().toString());
+                        Log.e("findProfess...", dataSnapshot.child("name").getValue().toString());
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+
+                    }
+                });
+            }
+            mAdapter = new StudentViewAdapter(assigments);
+            mAdapter.setRecyclerClickListener(Student.this);
+            myRecyclerView.setAdapter(mAdapter);
+        }
     }
 }

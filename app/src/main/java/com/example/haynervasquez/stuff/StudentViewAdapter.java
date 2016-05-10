@@ -38,9 +38,10 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.textViewName.setText(holder.textViewName.getText()+" : "+mData.get(position).getName());
-        holder.textViewStartDate.setText(holder.textViewStartDate.getText()+" : "+mData.get(position).getStartDate());
-        holder.textViewFinishDate.setText(holder.textViewFinishDate.getText()+" : "+mData.get(position).getFinishDate());
+        holder.textViewName.setText("Name"+" : "+mData.get(position).getName());
+        holder.textViewStartDate.setText("Start Date"+" : "+mData.get(position).getStartDate());
+        holder.textViewFinishDate.setText("Finish Date"+" : "+mData.get(position).getFinishDate());
+        holder.textBy.setText("By"+" : "+mData.get(position).getCreatedBy());
     }
 
     @Override
@@ -49,22 +50,22 @@ public class StudentViewAdapter extends RecyclerView.Adapter<StudentViewAdapter.
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public TextView textViewName, textViewStartDate, textViewFinishDate,textBy;
+        public TextView textViewName, textViewStartDate, textViewFinishDate, textBy;
         public ImageButton buttonJoin;
 
         public MyViewHolder(View itemView){
             super(itemView);
-            itemView.setOnClickListener(this);
+            //itemView.setOnClickListener(this);
             this.textViewName       = (TextView)itemView.findViewById(R.id.name_student_view);
             this.textViewStartDate  = (TextView)itemView.findViewById(R.id.start_date_student_view);
             this.textViewFinishDate = (TextView)itemView.findViewById(R.id.finish_date_student_view);
-            this.buttonJoin         = (ImageButton)itemView.findViewById(R.id.join_btn_student_view);
             this.textBy             = (TextView)itemView.findViewById(R.id.professor_name_student_view);
+            this.buttonJoin         = (ImageButton)itemView.findViewById(R.id.join_btn_student_view);
+            buttonJoin.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.i("onClickMyViewHolder","onClick in Student");
             if (mRecyclerClickListener != null) {
                 Log.i("onClickMyViewHolder",""+getPosition());
                 mRecyclerClickListener.itemClick(mData.get(getPosition()));

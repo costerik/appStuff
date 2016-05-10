@@ -200,6 +200,10 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
             return this.createdBy;
         }
 
+        public void setCreatedByName(String by){
+            this.createdBy = by;
+        }
+
         public String getKeyFireBase(){
             return this.keyFireBase;
         }
@@ -219,5 +223,6 @@ public class Professor extends Fragment implements AssignmentAdapter.RecyclerCli
         public String getFinishDate(){
             return this.finishDate;
         }
+
     }
 }

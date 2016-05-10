@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +31,12 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link LocationStuff#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+
 public class LocationStuff extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
 
     private GoogleApiClient mGoogleApiClient;
@@ -42,13 +49,49 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     private ArrayList<LatLng> latLonArray;
     private FloatingActionButton fab, fab2,fab3, fab4;
 
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    static final String ID_KEY = "idKeyStudent";
+    static final String ID_NAME = "idNameStudent";
+    static final String ID_KEY_ACTIVITY = "idKeyActivity";
+
+    // TODO: Rename and change types of parameters
+    private String keyStudent;
+    private String nameStudent;
+    private String keyActivity;
+
     public LocationStuff() {
         // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param keyS Parameter 1.
+     * @param name Parameter 2.
+     * @param keyA Parameter 2.
+     * @return A new instance of fragment Student.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static LocationStuff newInstance(String keyS, String name,String keyA) {
+        LocationStuff fragment = new LocationStuff();
+        Bundle args = new Bundle();
+        args.putString(ID_KEY, keyS);
+        args.putString(ID_NAME, name);
+        args.putString(ID_KEY_ACTIVITY,keyA);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            keyStudent  = getArguments().getString(ID_KEY);
+            nameStudent = getArguments().getString(ID_NAME);
+            keyActivity = getArguments().getString(ID_KEY_ACTIVITY);
+        }
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                     .addConnectionCallbacks(this)
@@ -58,6 +101,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         }
         createLocationRequest();
         latLonArray = new ArrayList<LatLng>();
+        Log.i("onCreate","LocationStuff" +" "+keyStudent+" "+nameStudent+" "+keyActivity);
     }
 
     @Override
@@ -106,6 +150,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         MapFragment mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Log.i("onCreateView","LocationStuff");
         return v;
     }
 
@@ -113,12 +158,14 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     public void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
+        Log.i("onStart","LocationStuff");
     }
 
     @Override
     public void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
+        Log.i("onStop","LocationStuff");
     }
 
     @Override
@@ -127,12 +174,14 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
             startLocationUpdates();
         }
+        Log.i("onResume","LocationStuff");
     }
 
     @Override
     public void onPause() {
         super.onPause();
         stopLocationUpdates();
+        Log.i("onPause","LocationStuff");
     }
 
     @Override
