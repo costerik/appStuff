@@ -1,10 +1,15 @@
 package com.example.haynervasquez.stuff;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,9 +33,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +48,12 @@ import java.util.ArrayList;
  */
 
 public class LocationStuff extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private Uri fileUri;
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int MEDIA_TYPE_VIDEO = 2;
+
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -117,8 +133,20 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(getView(),"hello cam",Snackbar.LENGTH_SHORT).show();
-                addLines();
+                if(mGoogleApiClient.isConnected()) {
+                    addLines();
+                }else{
+                    Snackbar.make(getView(),"Google is not connected",Snackbar.LENGTH_SHORT).show();
+                }
+
+                // create Intent to take a picture and return control to the calling application
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+
+                // start the image capture Intent
+                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
             }
         });
 
@@ -219,8 +247,8 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     @Override
     public void onLocationChanged(Location location) {
         latLonArray.add(new LatLng(location.getLatitude(),location.getLongitude()));
-        /*mLastLocation=location;
-        Log.e("LocationChanged", location.getLatitude() + " " + location.getLongitude());
+        mLastLocation=location;
+        /*Log.e("LocationChanged", location.getLatitude() + " " + location.getLongitude());
         LatLng lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(lastLocation).title("Home?"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(lastLocation));
@@ -290,5 +318,68 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLonArray.get(0),
                     18));
         }
+    }
+
+    /*
+    * Code for camera
+    *
+    * */
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        Log.i("onActivityResult","LocationStuff"+" "+requestCode +" "+resultCode);
+        /*if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                // Image captured and saved to fileUri specified in the Intent
+                //Toast.makeText(getActivity(), "Image saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
+               //Log.i("OnActivityResult","Image saved to:\n" + data.getData());
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // User cancelled the image capture
+            } else {
+                // Image capture failed, advise user
+            }
+        }*/
+        LatLng lastLocation=new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(lastLocation).title("Photo"));
+    }
+
+    /** Create a file Uri for saving an image or video */
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /** Create a File for saving an image or video */
+    private static File getOutputMediaFile(int type){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else if(type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_"+ timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
     }
 }

@@ -78,6 +78,7 @@ public class Student extends Fragment implements StudentViewAdapter.RecyclerClic
             keyStudent = getArguments().getString(ID_KEY);
             nameStudent = getArguments().getString(ID_NAME);
         }
+        Firebase.setAndroidContext(getContext());
         setHasOptionsMenu(true);
         m_fb  = new Firebase("https://movil.firebaseio.com/assigments");
         m_fbp = new Firebase("https://movil.firebaseio.com/professors");
