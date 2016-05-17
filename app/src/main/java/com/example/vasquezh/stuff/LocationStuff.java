@@ -1,4 +1,4 @@
-package com.example.haynervasquez.stuff;
+package com.example.vasquezh.stuff;
 
 import android.Manifest;
 import android.app.Activity;
@@ -16,13 +16,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Toast;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -32,6 +33,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -64,6 +67,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     private GoogleMap mMap;
     private ArrayList<LatLng> latLonArray;
     private FloatingActionButton fab, fab2,fab3, fab4;
+    private Firebase m_fb;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -118,6 +122,8 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         createLocationRequest();
         latLonArray = new ArrayList<LatLng>();
         Log.i("onCreate","LocationStuff" +" "+keyStudent+" "+nameStudent+" "+keyActivity);
+        m_fb = new Firebase("https://movil.firebaseio.com/");
+        m_fb.child("members").child(keyActivity).child(keyStudent).setValue("true");
     }
 
     @Override
@@ -167,15 +173,38 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         fab4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(getView(),"hello tag",Snackbar.LENGTH_SHORT).show();
+                if(mGoogleApiClient.isConnected()) {
+                    if(mLastLocation!=null) {
+                        LatLng pos = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos,18));
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(pos)      // Sets the center of the map to lastLocation
+                                .zoom(17)                   // Sets the zoom
+                                .bearing(90)                // Sets the orientation of the camera to east
+                                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                                .build();                   // Creates a CameraPosition from the builder
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+                }
             }
         });
 
         /*
            Obtencion del fragment mediante la actividad asi de esta manera realizar el casting del fragment a mapfragment
-           para su posterior uso
-         */
-        MapFragment mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
+           para su posterior uso*/
+        //MapFragment mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
+        //MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        //mapFragment.getMapAsync(this);
+        
+        FragmentManager fm = getChildFragmentManager();
+        SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
+        if (mapFragment == null) {
+            mapFragment = new SupportMapFragment();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.add(R.id.mapFragmentContainer, mapFragment, "mapFragment");
+            ft.commit();
+            fm.executePendingTransactions();
+        }
         mapFragment.getMapAsync(this);
 
         Log.i("onCreateView","LocationStuff");
@@ -210,6 +239,12 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         super.onPause();
         stopLocationUpdates();
         Log.i("onPause","LocationStuff");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -248,17 +283,8 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     public void onLocationChanged(Location location) {
         latLonArray.add(new LatLng(location.getLatitude(),location.getLongitude()));
         mLastLocation=location;
-        /*Log.e("LocationChanged", location.getLatitude() + " " + location.getLongitude());
-        LatLng lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(lastLocation).title("Home?"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(lastLocation));
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(lastLocation)      // Sets the center of the map to lastLocation
-                .zoom(17)                   // Sets the zoom
-                .bearing(90)                // Sets the orientation of the camera to east
-                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
+        Log.i("LocationChanged", location.getLatitude() + " " + location.getLongitude());
+
     }
 
     @Override
@@ -327,21 +353,21 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        Log.i("onActivityResult","LocationStuff"+" "+requestCode +" "+resultCode);
-        /*if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+        Log.i("onActivityResult","LocationStuff"+" "+requestCode +" "+resultCode +" "+Activity.RESULT_OK);
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
 
                 // Image captured and saved to fileUri specified in the Intent
                 //Toast.makeText(getActivity(), "Image saved to:\n" + data.getData(), Toast.LENGTH_LONG).show();
                //Log.i("OnActivityResult","Image saved to:\n" + data.getData());
+                LatLng lastLocation=new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(lastLocation).title("Photo"));
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the image capture
             } else {
                 // Image capture failed, advise user
             }
-        }*/
-        LatLng lastLocation=new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(lastLocation).title("Photo"));
+        }
     }
 
     /** Create a file Uri for saving an image or video */

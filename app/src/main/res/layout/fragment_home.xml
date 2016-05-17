@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.haynervasquez.stuff.Home"
+    tools:context="com.example.vasquezh.stuff.Home"
     android:orientation="vertical"
     android:id="@+id/ppal_linear">
 
@@ -48,7 +48,7 @@
 
             <EditText
                 android:id="@+id/input_email_log_in"
-                android:text="alfonso@uninorte.edu.co"
+                android:text="\@uninorte.edu.co"
                 android:theme="@style/MyEditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

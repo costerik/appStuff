@@ -1,6 +1,5 @@
-package com.example.haynervasquez.stuff;
+package com.example.vasquezh.stuff;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;

@@ -1,4 +1,4 @@
-package com.example.haynervasquez.stuff;
+package com.example.vasquezh.stuff;
 
 
 import android.app.ProgressDialog;
@@ -23,7 +23,6 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.

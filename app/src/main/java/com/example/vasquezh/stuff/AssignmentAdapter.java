@@ -1,4 +1,4 @@
-package com.example.haynervasquez.stuff;
+package com.example.vasquezh.stuff;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Ing. Erik Ahumada on 22/04/2016.
- */
 public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.MyViewHolder> {
 
     private ArrayList<Professor.Assigment> mData;

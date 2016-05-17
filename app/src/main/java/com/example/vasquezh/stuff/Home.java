@@ -1,4 +1,4 @@
-package com.example.haynervasquez.stuff;
+package com.example.vasquezh.stuff;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;

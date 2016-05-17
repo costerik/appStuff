@@ -1,4 +1,4 @@
-package com.example.haynervasquez.stuff;
+package com.example.vasquezh.stuff;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
-/**
- * Created by Ing. Erik Ahumada on 25/04/2016.
- */
 public class MyDatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private final Calendar c = Calendar.getInstance();;
