@@ -119,11 +119,18 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
                     .addApi(LocationServices.API)
                     .build();
         }
+        Date dateStart = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy 'at' hh:mm:ss");
+
+        String strDateStart = sdf.format(dateStart);
+
         createLocationRequest();
         latLonArray = new ArrayList<LatLng>();
         Log.i("onCreate","LocationStuff" +" "+keyStudent+" "+nameStudent+" "+keyActivity);
         m_fb = new Firebase("https://movil.firebaseio.com/");
-        m_fb.child("members").child(keyActivity).child(keyStudent).setValue("true");
+        //m_fb.child("members").child(keyActivity).child(keyStudent)
+        m_fb.child("members").child(keyActivity).child(keyStudent).child("startActivity").setValue(strDateStart);
+
     }
 
     @Override
@@ -195,7 +202,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         //MapFragment mapFragment = (MapFragment) (getActivity()).getFragmentManager().findFragmentById(R.id.map);
         //MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         //mapFragment.getMapAsync(this);
-        
+
         FragmentManager fm = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
         if (mapFragment == null) {
@@ -242,9 +249,13 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    public void onDestroy(){
+        Date dateFinish = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy 'at' hh:mm:ss");
+        String strDateFinish = sdf.format(dateFinish);
+        m_fb.child("members").child(keyActivity).child(keyStudent).child("finishActivity").setValue(strDateFinish);
+        super.onDestroy();
+        Log.i("onDestroy","LocationStuff");
     }
 
     @Override

@@ -17,6 +17,8 @@
     <string name="name">Name</string>
     <string name="start_date">Start date</string>
     <string name="finish_date">Finish Date</string>
+    <string name="start_activity">Start activity</string>
+    <string name="finish_activity">Finish activity</string>
     <string name="create_assign">Create</string>
     <string name="by">by</string>
 

@@ -11,18 +11,18 @@ import java.util.ArrayList;
 
 public class StudentAdapter  extends RecyclerView.Adapter<StudentAdapter.MyViewHolder> {
 
-    private ArrayList<Home.User> mData;
+    private ArrayList<ListStudentAssigment.StudentActivity> mData;
     private RecyclerClickListener mRecyclerClickListener;
 
     public interface RecyclerClickListener{
-        void itemClick(Home.User user);
+        void itemClick(ListStudentAssigment.StudentActivity sa);
     }
 
     public void setRecyclerClickListener(RecyclerClickListener recyclerClickListener){
         mRecyclerClickListener=recyclerClickListener;
     }
 
-    public StudentAdapter(ArrayList<Home.User> data){
+    public StudentAdapter(ArrayList<ListStudentAssigment.StudentActivity> data){
         this.mData = data;
     }
 
@@ -36,9 +36,9 @@ public class StudentAdapter  extends RecyclerView.Adapter<StudentAdapter.MyViewH
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.textViewName.setText(holder.textViewName.getText()+" : "+mData.get(position).getName());
-        holder.textViewStartDate.setText(holder.textViewStartDate.getText()+" : ");
-        holder.textViewFinishDate.setText(holder.textViewFinishDate.getText()+" : ");
+        holder.textViewName.setText(holder.textViewName.getText()+" : "+mData.get(position).name);
+        holder.textViewStartDate.setText(holder.textViewStartDate.getText()+" : "+mData.get(position).startActivity);
+        holder.textViewFinishDate.setText(holder.textViewFinishDate.getText()+" : "+mData.get(position).finishActivity);
     }
 
     @Override

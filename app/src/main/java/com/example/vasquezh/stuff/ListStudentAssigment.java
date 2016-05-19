@@ -35,6 +35,7 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
     private RecyclerView.LayoutManager mLayoutManager;
     private Firebase m_fb,mFbStudent;
     private ArrayList<Home.User> members;
+    private ArrayList<StudentActivity> studentActivities;
     private ProgressDialog pDialog;
 
 
@@ -92,6 +93,7 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
         myRecyclerView.setLayoutManager(mLayoutManager);
         myRecyclerView.setItemAnimator(new DefaultItemAnimator());
         members = new ArrayList<Home.User>();
+        studentActivities = new ArrayList<StudentActivity>();
 
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar_list_student);
         AppCompatActivity appca = ((AppCompatActivity)getActivity());
@@ -122,7 +124,7 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
     * */
 
     @Override
-    public void itemClick(Home.User user) {
+    public void itemClick(StudentActivity sa) {
 
     }
 
@@ -149,7 +151,10 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
                         if(postSnapshot.getKey().compareTo(keyAssigment)==0) {
                             HashMap<String,String> m= (HashMap<String, String>) postSnapshot.getValue();
                             for(String key: m.keySet()){
-                                System.out.println(key);
+                                //member.add(postSnapshot.getValue(Member.class));
+                                System.out.println("what this key is "+ key);
+                                System.out.println(keyAssigment+"-"+ key +"-"+postSnapshot.child(key).child("startActivity").getValue().toString()+"-"+postSnapshot.child(key).child("finishActivity").getValue().toString());
+                                studentActivities.add(new StudentActivity(key,postSnapshot.child(key).child("startActivity").getValue().toString(),postSnapshot.child(key).child("finishActivity").getValue().toString() ));
                                 keys.add(key);
                             }
                         }
@@ -184,16 +189,18 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
                             if(postSnapshot.getKey().compareTo(key)==0){
                                 a.setKeyFireBase(dataSnapshot.getKey());
                                 members.add(a);
+
                             }
                         }
                     }
                     System.out.println("members size "+ members.size());
                     if(!members.isEmpty()) {
-                        for (Home.User a : members) {
-                            System.out.println("Member: " + a.getKeyFireBase() + " " + a.getName() + " " + a.getEmail() + " " + a.getPassword());
+                        for (int i=0;i<=members.size()-1;i++) {
+                            System.out.println("Member: " + members.get(i).getKeyFireBase() + " " + members.get(i).getName() + " " + members.get(i).getEmail() + " " + members.get(i).getPassword());
+                            studentActivities.get(i).name = members.get(i).getName();
                         }
                     }
-                    mAdapter = new StudentAdapter(members);
+                    mAdapter = new StudentAdapter(studentActivities);
                     mAdapter.setRecyclerClickListener(ListStudentAssigment.this);
                     myRecyclerView.setAdapter(mAdapter);
                 }
@@ -207,4 +214,25 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
         }
     }
 
+    public class Member{
+        String  keyFireBase, startDate, finishDate;
+
+        public Member(String keyFireBase, String startDate, String finishDate){
+            this.keyFireBase=keyFireBase;
+            this.startDate= startDate;
+            this.finishDate=finishDate;
+        }
+    }
+
+    public class StudentActivity{
+
+        String name, startActivity, finishActivity;
+
+        public StudentActivity(String name, String startActivity, String finishActivity){
+            this.name=name;
+            this.startActivity=startActivity;
+            this.finishActivity=finishActivity;
+        }
+
+    }
 }
