@@ -153,8 +153,10 @@ public class ListStudentAssigment extends Fragment implements StudentAdapter.Rec
                             for(String key: m.keySet()){
                                 //member.add(postSnapshot.getValue(Member.class));
                                 System.out.println("what this key is "+ key);
-                                System.out.println(keyAssigment+"-"+ key +"-"+postSnapshot.child(key).child("startActivity").getValue().toString()+"-"+postSnapshot.child(key).child("finishActivity").getValue().toString());
-                                studentActivities.add(new StudentActivity(key,postSnapshot.child(key).child("startActivity").getValue().toString(),postSnapshot.child(key).child("finishActivity").getValue().toString() ));
+                                if(postSnapshot.child(key).child("startActivity").getValue() != null && postSnapshot.child(key).child("finishActivity").getValue() != null ) {
+                                    System.out.println(keyAssigment + "-" + key + "-" + postSnapshot.child(key).child("startActivity").getValue().toString() + "-" + postSnapshot.child(key).child("finishActivity").getValue().toString());
+                                    studentActivities.add(new StudentActivity(key, postSnapshot.child(key).child("startActivity").getValue().toString(), postSnapshot.child(key).child("finishActivity").getValue().toString()));
+                                }
                                 keys.add(key);
                             }
                         }
