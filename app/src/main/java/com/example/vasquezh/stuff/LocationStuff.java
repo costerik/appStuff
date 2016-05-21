@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.common.ConnectionResult;
@@ -50,12 +52,14 @@ import java.util.Date;
  * create an instance of this fragment.
  */
 
-public class LocationStuff extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+public class LocationStuff extends Fragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback,TagDialog.NoticeTagDialogListener {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private Uri fileUri;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
+
+    private TagDialog td;
 
 
     private GoogleApiClient mGoogleApiClient;
@@ -107,6 +111,8 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        td = new TagDialog();
+        td.mListener=this;
         if (getArguments() != null) {
             keyStudent  = getArguments().getString(ID_KEY);
             nameStudent = getArguments().getString(ID_NAME);
@@ -173,7 +179,8 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         fab3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(getView(),"hello note",Snackbar.LENGTH_SHORT).show();
+                //Snackbar.make(getView(),"hello note",Snackbar.LENGTH_SHORT).show();
+                td.show(getFragmentManager(), "TagDialog");
             }
         });
 
@@ -418,5 +425,19 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         }
 
         return mediaFile;
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        Log.i("LocationStuff","DataDialog Positive");
+        String name = ((EditText)dialog.getDialog().findViewById(R.id.edtTagNote)).getText().toString();
+        LatLng lastLocation=new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(lastLocation).title(name));
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
     }
 }
