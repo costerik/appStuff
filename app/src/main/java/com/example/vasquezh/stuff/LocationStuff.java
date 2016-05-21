@@ -172,7 +172,8 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(getView(),"hello voice",Snackbar.LENGTH_SHORT).show();
+                AudioRecordTest record = new AudioRecordTest();
+                getFragmentManager().beginTransaction().replace(R.id.fragment_container, record).addToBackStack(null).commit();
             }
         });
 
@@ -192,7 +193,7 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
                         LatLng pos = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos,18));
                         CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(pos)      // Sets the center of the map to lastLocation
+                                .target(pos)                // Sets the center of the map to lastLocation
                                 .zoom(17)                   // Sets the zoom
                                 .bearing(90)                // Sets the orientation of the camera to east
                                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
@@ -348,8 +349,10 @@ public class LocationStuff extends Fragment implements GoogleApiClient.Connectio
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
+        if(mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+        }
     }
 
     private void addLines() {

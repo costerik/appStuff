@@ -23,6 +23,8 @@
     <string name="by">by</string>
     <string name="tag_text">Ingrese el texto</string>
     <string name="type_here">Type here...</string>
+    <string name="start_record">Start Record</string>
+    <string name="start_play">Start Play</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
